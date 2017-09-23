@@ -5,7 +5,7 @@ A project for VAD. It is a homework project for ASR
 
 使用方法
 
-```
+```Shell
 VAD.exe 需要被检测的WAVE文件 储存剪切后的audio的文件夹位置
 #example
 VAD.exe PHONE_001.wav ~/Documents/VAD/audio
