@@ -16,7 +16,7 @@ typedef struct {
 double frameSizeInTime = 0.025; 
 double frameShiftSizeInTime = 0.010;
 double MH = (double)1e5, ML = (double)1e4, Zs = 0.06;
-double gapLeast = 0.11;
+double gapLeast = 0.10;
 
 
 int main(int argc, char** argv) {
