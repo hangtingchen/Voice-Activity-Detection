@@ -32,8 +32,8 @@ VAD.exe
 ```
 
 ### 示例
-![example1][Pic/1.png]
-![example2][Pic/1.png]
+![example1][https://github.com/hangtinghen/Voice-Activity-Detection/blob/master/Pic/1.PNG]
+![example2][https://github.com/hangtinghen/Voice-Activity-Detection/blob/master/Pic/2.PNG]
 
 ## 程序概述
 
