@@ -16,7 +16,8 @@ typedef struct {
 double frameSizeInTime = 0.025; 
 double frameShiftSizeInTime = 0.010;
 double MH = (double)1e5, ML = (double)1e4, Zs = 0.06;
-double gapLeast = 0.10;
+double gapLeast = 1.00;
+double genderDectectionWindow = 0.2;
 
 
 int main(int argc, char** argv) {
@@ -120,7 +121,7 @@ int main(int argc, char** argv) {
 
 	//print the speech segments and store these information into a linkList
 	pos = 1; activeSeg* head = NULL; activeSeg* tail = NULL; activeSeg* tempP = NULL;
-	printf("\nthe voice active segments : \n");
+	printf("\nthe voice active segments(s) : \n");
 	for (int i = 2; i <= numFrames-1; i++) {
 		if (!speechInd[i - 1] && speechInd[i])pos = i;//01
 		if (speechInd[i] && (!speechInd[i+1] || i== numFrames - 1) &&pos) {	//10
@@ -133,7 +134,7 @@ int main(int argc, char** argv) {
 				tail->link = tempP; tail = tempP;
 			}
 			
-			printf("\t%f --- %f \n", frameShiftSizeInTime*(double)(pos), frameShiftSizeInTime*(double)(i));
+			printf("%.2f --- %.2f\t", frameShiftSizeInTime*(double)(pos), frameShiftSizeInTime*(double)(i));
 			pos = 0;
 			
 		}
@@ -166,12 +167,10 @@ int main(int argc, char** argv) {
 		for (int i = tempP->startSampleNum; i <= tempP->endSampleNum; i++)for (int j = 1; j <= paramsForWrite.numChannels; j++)samplesForWrite[j][i - tempP->startSampleNum + 1] = w.DATA.data[j][i];
 		writeWaveFile(waveForWrite, paramsForWrite, samplesForWrite);
 		fclose(waveForWrite);
-		printf("\tWriting file %s\n", saveFileDes1);
+		printf("%s\t", saveFileDes1);
 
 		FreeIntMat(samplesForWrite);
 		tempP = tempP->link;
-
-
 	}
 	
 	
@@ -183,6 +182,12 @@ int main(int argc, char** argv) {
 		head = tempP;
 	} while (head);
 	head = tail = tempP = NULL;
+
+
+	int frameSize2 = (int)(genderDectectionWindow*(double)w.WAVEParams.sampleRate); int frameShiftSize2 = (int)(genderDectectionWindow/2*(double)w.WAVEParams.sampleRate);
+	Matrix frameStackOfSignal2 = frameRawSignal(w.DATA.data[1], frameSize2, frameShiftSize2);
+	int numFrames2 = NumRows(frameStackOfSignal2);
+
 	
 
 	/*
