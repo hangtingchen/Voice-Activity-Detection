@@ -16,7 +16,7 @@ typedef struct {
 double frameSizeInTime = 0.025; 
 double frameShiftSizeInTime = 0.010;
 double MH = (double)1e5, ML = (double)1e4, Zs = 0.06;
-double gapLeast = 1.00;
+double gapLeast = 0.5;
 double genderDectectionWindow = 0.2;
 
 
@@ -54,11 +54,6 @@ int main(int argc, char** argv) {
 		energyForFrames[i] /= frameSize;
 	}
 
-/*	FILE* f = fopen("temp.dat", "w"); 
-	WriteVectorE(f, zeroCrossingRateForFrames); 
-	WriteVectorE(f, energyForFrames);
-	fclose(f);
-	*/
 
 	//set MH,ML and Zs
 	IntVec VMH = CreateIntVec(numFrames); IntVec VML = CreateIntVec(numFrames);
@@ -107,6 +102,14 @@ int main(int argc, char** argv) {
 			pos = 0;
 		}
 	}
+
+	//The data to plot
+	FILE* fdataOut = fopen("dataToPlot.dat", "w");
+	WriteVectorE(fdataOut, zeroCrossingRateForFrames);
+	WriteVectorE(fdataOut, energyForFrames);
+	WriteIntVec(fdataOut, speechInd);
+	fclose(fdataOut);
+	
 
 	//print the silent segments
 	//pos = 0;
