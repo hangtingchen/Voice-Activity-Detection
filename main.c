@@ -16,7 +16,7 @@ typedef struct {
 double frameSizeInTime = 0.025; 
 double frameShiftSizeInTime = 0.010;
 double MH = (double)1e4, ML = (double)2e3, Zs = 0.15;
-double gapLeast = 0.1;
+double gapLeast = 0.5;
 double genderDectectionWindow = 0.2;
 
 
