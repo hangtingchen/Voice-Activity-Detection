@@ -35,7 +35,7 @@ VAD.exe
 运行截图
 ![example1](https://github.com/hangtinghen/Voice-Activity-Detection/blob/master/Pic/1.PNG)
 结果
-![example2](https://github.com/hangtinghen/Voice-Activity-Detection/blob/master/Pic/result1.PNG)
+![example2](https://github.com/hangtinghen/Voice-Activity-Detection/blob/master/Pic/result1.jpg)
 
 ## 程序概述
 
