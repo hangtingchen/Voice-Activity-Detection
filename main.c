@@ -15,8 +15,8 @@ typedef struct {
 
 double frameSizeInTime = 0.025; 
 double frameShiftSizeInTime = 0.010;
-double MH = (double)1e5, ML = (double)1e4, Zs = 0.06;
-double gapLeast = 0.5;
+double MH = (double)1e4, ML = (double)2e3, Zs = 0.15;
+double gapLeast = 0.1;
 double genderDectectionWindow = 0.2;
 
 
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
 	int frameSize = (int)(frameSizeInTime*(double)w.WAVEParams.sampleRate); int frameShiftSize = (int)(frameShiftSizeInTime*(double)w.WAVEParams.sampleRate);
 	if (w.WAVEParams.numChannels > 1) { printf("Only use one channel\n"); }
 	printf("Frame length : %f s\nFrame shift length : %f s \n", frameSizeInTime, frameShiftSizeInTime);
-	Matrix frameStackOfSignal = frameRawSignal(w.DATA.data[1], frameSize, frameShiftSize);
+	Matrix frameStackOfSignal = frameRawSignal(w.DATA.data[1], frameSize, frameShiftSize,0.97,1);
 	int numFrames = NumRows(frameStackOfSignal);
 
 	//Calculate zero-crossing rate
@@ -66,29 +66,33 @@ int main(int argc, char** argv) {
 		VZs[i] = zeroCrossingRateForFrames[i] > 3.0*Zs ? 1 : 0;
 	}
 
-	//extend speechInd from MH to ML
 	int pos = 0;
 	CopyIntVec(VMH, speechInd);
-	for (int i = 2; i <= numFrames-1; i++) {
-		if (speechInd[i] == 0 && speechInd[i + 1] == 1) {
-			pos = i;
-			while (pos>=1&&pos<=numFrames&&VML[pos] == 1) { speechInd[pos] = 1; pos--; }
+	for (int epoch = 1; epoch <= 2; epoch++) {
+		//extend speechInd from MH to ML
+		pos = 0;
+		
+		for (int i = 2; i <= numFrames - 1; i++) {
+			if (speechInd[i] == 0 && speechInd[i + 1] == 1) {
+				pos = i;
+				while (pos >= 1 && pos <= numFrames&&VML[pos] == 1) { speechInd[pos] = 1; pos--; }
+			}
+			if (speechInd[i - 1] == 1 && speechInd[i] == 0) {
+				pos = i;
+				while (pos >= 1 && pos <= numFrames&&VML[pos] == 1) { speechInd[pos] = 1; pos++; }
+			}
 		}
-		if (speechInd[i-1] == 1 && speechInd[i] == 0) {
-			pos = i;
-			while (pos >= 1 && pos <= numFrames&&VML[pos] == 1) { speechInd[pos] = 1; pos++; }
-		}
-	}
 
-	//extend speechInd to Zs
-	for (int i = 2; i <= numFrames - 1; i++) {
-		if (speechInd[i] == 0 && speechInd[i + 1] == 1) {//01
-			pos = i;
-			while (pos >= 1 && pos <= numFrames&&VZs[pos] == 1) { speechInd[pos] = 1; pos--; }
-		}
-		if (speechInd[i - 1] == 1 && speechInd[i] == 0) {//10
-			pos = i;
-			while (pos >= 1 && pos <= numFrames&&VZs[pos] == 1) { speechInd[pos] = 1; pos++; }
+		//extend speechInd to Zs
+		for (int i = 2; i <= numFrames - 1; i++) {
+			if (speechInd[i] == 0 && speechInd[i + 1] == 1) {//01
+				pos = i;
+				while (pos >= 1 && pos <= numFrames&&VZs[pos] == 1) { speechInd[pos] = 1; pos--; }
+			}
+			if (speechInd[i - 1] == 1 && speechInd[i] == 0) {//10
+				pos = i;
+				while (pos >= 1 && pos <= numFrames&&VZs[pos] == 1) { speechInd[pos] = 1; pos++; }
+			}
 		}
 	}
 
@@ -186,11 +190,11 @@ int main(int argc, char** argv) {
 	} while (head);
 	head = tail = tempP = NULL;
 
-
-	int frameSize2 = (int)(genderDectectionWindow*(double)w.WAVEParams.sampleRate); int frameShiftSize2 = (int)(genderDectectionWindow/2*(double)w.WAVEParams.sampleRate);
+	/*
+	int frameSize2 = (int)(genderDectectionWindow*(double)w.WAVEParams.sampleRate); int frameShiftSize2 = (int)(genderDectectionWindow / 2 * (double)w.WAVEParams.sampleRate);
 	Matrix frameStackOfSignal2 = frameRawSignal(w.DATA.data[1], frameSize2, frameShiftSize2);
 	int numFrames2 = NumRows(frameStackOfSignal2);
-
+	*/
 	
 
 	/*
