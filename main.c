@@ -150,6 +150,7 @@ int main(int argc, char** argv) {
 
 	//save audio files
 	char saveFileDes1[300] = { '\0' }; char saveFileDes2[] = { '\\','\0' }; char saveFileDes3[5] = { '\0' }; char saveFileDes4[6] = { '.','w','a','v','\0' };
+	char saveFileDes5[5] = { '\0' }; char saveFileDes6[2] = { '_','\0' };
 	FILE* waveForWrite = NULL;
 	int saveFileCounter = 0;
 	WAVEParams_t paramsForWrite = w.WAVEParams;
@@ -164,9 +165,10 @@ int main(int argc, char** argv) {
 		}
 		else saveFileDes1[0] = '\0';
 
-		_itoa(saveFileCounter, saveFileDes3,10);
-		strcat(saveFileDes1, saveFileDes3);
-		strcat(saveFileDes1, saveFileDes4);
+		_itoa(tempP->startSampleNum/w.WAVEParams.sampleRate, saveFileDes3,10);
+		_itoa(tempP->endSampleNum / w.WAVEParams.sampleRate, saveFileDes5, 10);
+		strcat(saveFileDes1, saveFileDes3); strcat(saveFileDes1, saveFileDes6);
+		strcat(saveFileDes1, saveFileDes5); strcat(saveFileDes1, saveFileDes4);
 
 		waveForWrite = fopen(saveFileDes1, "wb");
 		paramsForWrite.numSamples = tempP->endSampleNum - tempP->startSampleNum + 1;
